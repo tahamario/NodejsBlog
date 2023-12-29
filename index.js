@@ -40,7 +40,11 @@ mongoose.connect(dbCnx, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Middleware to verify user through JWT
 const verifyUser = (req, res, next) => {
-    const token = req.cookies.token;
+    // const token = req.cookies.token;
+
+    // Get the token from the request headers
+    const token = req.headers.authorization;
+    
     if (!token) {
         return res.json({ 'status': 401, 'message': 'The token is missing' });
     } else {
@@ -87,8 +91,8 @@ app.post('/login', (req, res) => {
                 bcrypt.compare(req.body.loginData.password, user.password, (err, response) => {
                     if (response) {
                         const token = jwt.sign({ email: user.email, username: user.username }, jwtKey, { expiresIn: '1d' })
-                        res.cookie("token", token, { path: '/', domain: 'feelfreeblog.vercel.app' })
-                        return res.json({ 'status': 200, 'message': 'Success' });
+                        res.cookie("token", token, { path: '/', domain: 'feelfreeblog.vercel.app' });
+                        return res.json({ 'status': 200, 'message': 'Success', 'token': token });
                     } else {
                         return res.json({ 'status': 401, 'message': 'Password is incorrect' });
                     }
