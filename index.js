@@ -87,7 +87,7 @@ app.post('/login', (req, res) => {
                 bcrypt.compare(req.body.loginData.password, user.password, (err, response) => {
                     if (response) {
                         const token = jwt.sign({ email: user.email, username: user.username }, jwtKey, { expiresIn: '1d' })
-                        res.cookie("token", token)
+                        res.cookie("token", token, { path: '/', domain: 'feelfreeblog.vercel.app' })
                         return res.json({ 'status': 200, 'message': 'Success' });
                     } else {
                         return res.json({ 'status': 401, 'message': 'Password is incorrect' });
